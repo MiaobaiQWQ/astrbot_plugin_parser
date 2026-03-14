@@ -1,0 +1,10 @@
+name: astrbot_plugin_parser
+version: 1.0.0
+author: 陌陌QWQ/AI
+description: 统一、可扩展的流媒体链接解析器，支持视频与图文解析。
+repo: https://github.com/MiaobaiQWQ/astrbot_plugin_parser
+dependencies:
+  - aiohttp
+  - aioredis
+  - pydantic
+  - yt-dlp

@@ -1,0 +1,60 @@
+{
+    "enable_compression": {
+        "type": "bool",
+        "title": "启用封面压缩",
+        "default": false
+    },
+    "cache_expire": {
+        "type": "int",
+        "title": "缓存过期时间 (秒)",
+        "default": 300
+    },
+    "max_concurrency": {
+        "type": "int",
+        "title": "最大并发数",
+        "default": 5
+    },
+    "bilibili_cookie": {
+        "type": "string",
+        "title": "哔哩哔哩 Cookie",
+        "default": ""
+    },
+    "douyin_cookie": {
+        "type": "string",
+        "title": "抖音 Cookie",
+        "default": ""
+    },
+    "xiaohongshu_cookie": {
+        "type": "string",
+        "title": "小红书 Cookie",
+        "default": ""
+    },
+    "instagram_cookie": {
+        "type": "string",
+        "title": "Instagram Cookie",
+        "default": ""
+    },
+    "tiktok_cookie": {
+        "type": "string",
+        "title": "TikTok Cookie",
+        "default": ""
+    },
+    "youtube_api_key": {
+        "type": "string",
+        "title": "YouTube API 密钥",
+        "default": ""
+    },
+    "twitter_token": {
+        "type": "string",
+        "title": "推特 Token",
+        "default": ""
+    },
+    "ignore_qq_list": {
+        "type": "list",
+        "title": "忽略的 QQ 号列表 (防止机器人循环)",
+        "default": [],
+        "items": {
+            "type": "string"
+        }
+    }
+}

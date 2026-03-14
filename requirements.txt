@@ -1,0 +1,5 @@
+aiohttp
+Pillow
+apilmoji>=0.3.0
+pydantic
+yt-dlp
