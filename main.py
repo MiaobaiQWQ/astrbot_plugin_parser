@@ -1,5 +1,6 @@
 import json
 import re
+from typing import Optional
 from astrbot.api.all import *
 try:
     from astrbot.api.message_components import Node, Nodes
@@ -16,6 +17,41 @@ class ParserPlugin(Star):
         super().__init__(context)
         self.config = config
         self.renderer = Renderer(cache_expire=config.get("cache_expire", 300))
+
+    def _get_sender_id(self, event: AstrMessageEvent) -> Optional[str]:
+        message_obj = getattr(event, "message_obj", None)
+        sender = getattr(message_obj, "sender", None) if message_obj else None
+        user_id = getattr(sender, "user_id", None) if sender else None
+        if user_id is None:
+            return None
+        return str(user_id)
+
+    def _get_group_id(self, event: AstrMessageEvent) -> Optional[str]:
+        message_obj = getattr(event, "message_obj", None)
+        if not message_obj:
+            return None
+
+        for attr in ("group_id", "groupId", "group_uin", "groupUin"):
+            group_id = getattr(message_obj, attr, None)
+            if group_id:
+                return str(group_id)
+
+        session_id = getattr(message_obj, "session_id", None)
+        if isinstance(session_id, str) and session_id.startswith("group_"):
+            return session_id.split("_", 1)[1] or None
+
+        return None
+
+    def _is_allowed_by_lists(self, target_id: str, whitelist: list, blacklist: list) -> bool:
+        target_id = str(target_id)
+        whitelist = [str(x) for x in (whitelist or []) if x is not None and str(x).strip()]
+        blacklist = [str(x) for x in (blacklist or []) if x is not None and str(x).strip()]
+
+        if target_id in blacklist:
+            return False
+        if whitelist and target_id not in whitelist:
+            return False
+        return True
 
     def _format_count(self, count: int) -> str:
         if count >= 10000:
@@ -34,10 +70,26 @@ class ParserPlugin(Star):
 
     @event_message_type(EventMessageType.ALL, priority=1)
     async def on_message(self, event: AstrMessageEvent):
-        # 0. 检查忽略列表
+        sender_id = self._get_sender_id(event)
         ignore_list = self.config.get("ignore_qq_list", [])
-        if ignore_list and event.message_obj.sender and str(event.message_obj.sender.user_id) in ignore_list:
+        if sender_id and ignore_list and sender_id in [str(x) for x in ignore_list]:
             return
+
+        group_id = self._get_group_id(event)
+        if group_id:
+            if not self._is_allowed_by_lists(
+                group_id,
+                self.config.get("group_whitelist", []),
+                self.config.get("group_blacklist", []),
+            ):
+                return
+        elif sender_id:
+            if not self._is_allowed_by_lists(
+                sender_id,
+                self.config.get("private_whitelist", []),
+                self.config.get("private_blacklist", []),
+            ):
+                return
 
         # 1. 从纯文本提取 URL
         text = event.message_str

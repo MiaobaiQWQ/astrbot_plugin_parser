@@ -49,6 +49,38 @@
         "title": "推特 Token",
         "default": ""
     },
+    "group_whitelist": {
+        "type": "list",
+        "title": "群聊白名单 (填群号；不为空时仅白名单生效)",
+        "default": [],
+        "items": {
+            "type": "string"
+        }
+    },
+    "group_blacklist": {
+        "type": "list",
+        "title": "群聊黑名单 (填群号；命中则不处理)",
+        "default": [],
+        "items": {
+            "type": "string"
+        }
+    },
+    "private_whitelist": {
+        "type": "list",
+        "title": "私信白名单 (填 QQ 号；不为空时仅白名单生效)",
+        "default": [],
+        "items": {
+            "type": "string"
+        }
+    },
+    "private_blacklist": {
+        "type": "list",
+        "title": "私信黑名单 (填 QQ 号；命中则不处理)",
+        "default": [],
+        "items": {
+            "type": "string"
+        }
+    },
     "ignore_qq_list": {
         "type": "list",
         "title": "忽略的 QQ 号列表 (防止机器人循环)",
